@@ -81,7 +81,7 @@ async function sendWhatsAppMessage(to, text) {
     await axios.post(
       CHATMITRA_API_URL,
       {
-        phone: to,
+        recipient_mobile_number: to,
         message: text
       },
       {
