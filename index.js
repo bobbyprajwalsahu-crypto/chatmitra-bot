@@ -108,3 +108,7 @@ async function sendWhatsAppMessage(to, text) {
     console.error("Message bhejne mein error:", error.response?.data || error.message);
   }
 }
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Webhook server running on port ${PORT}`);
+});
