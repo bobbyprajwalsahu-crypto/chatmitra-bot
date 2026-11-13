@@ -76,13 +76,22 @@ app.post('/webhook', async (req, res) => {
 });
 
 // ChatMitra API se message bhejne ka function
+// ChatMitra API se message bhejne ka function
 async function sendWhatsAppMessage(to, text) {
   try {
     await axios.post(
       CHATMITRA_API_URL,
       {
-        recipient_mobile_number: to,
-        message: text
+        recipient_mobile_number: String(to),
+        messages: [
+          {
+            kind: 'raw',
+            type: 'text',
+            text: {
+              body: text
+            }
+          }
+        ]
       },
       {
         headers: {
@@ -96,6 +105,3 @@ async function sendWhatsAppMessage(to, text) {
     console.error("Message bhejne mein error:", error.response?.data || error.message);
   }
 }
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Webhook server running on port ${PORT}`));
