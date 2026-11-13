@@ -4,13 +4,13 @@ const app = express();
 app.use(express.json());
 
 // Apni ChatMitra API details yahan daalein
-const CHATMITRA_API_URL = 'https://backend.chatmitra.com/developer/api/send_message';
+const CHATMITRA_API_URL = 'https://chatmitra.com';
 const API_TOKEN = '107b1d273e4ca8d4ff222dae7129df56:2855333b8497f40b8e35a5e961a8d0e56ecd59459a391cbc510c387f9868b0d93f7bd09c7827328bdd30c09049528219b0defdfc42e1854c495cfb5cc6f17a426e407d1982eddf76ecd67f044b99f702e3b279491b77fa59f911eaa4b10869b9c8627b523bdbe086a35e0f0117d2b3b6288a1879f5f2dc4ad3148db94c03e3f4c57323073d96f3d1d6762b5cc483a1f2af3b08f9f68559878b4528d0304187c0f4b74da1168263d5ec87208c3257eb7516fbbdda5385391b17e84406a87da2c3'; 
 
 // Customer ka order state yaad rakhne ke liye temporary storage
 const userState = {}; 
 
-// Health check route (UptimeRobot aur browser testing ke liye)
+// Browser mein URL kholne par status dikhane ke liye
 app.get('/', (req, res) => {
   res.send('ChatMitra Webhook Server is Running!');
 });
@@ -54,9 +54,11 @@ app.post('/webhook', async (req, res) => {
   
   // 2. Jab customer apna Name aur Address reply karta hai
   else if (messageType === 'text' && userState[customerPhone]?.step === 'WAITING_FOR_ADDRESS') {
-    const customerAddressDetails = payload.message.text?.body;
+    const customerAddressDetails = typeof payload.message.text === 'string' 
+      ? payload.message.text 
+      : payload.message.text?.body;
 
-    // Final order details console logs mein print karein
+    // Confirmed order logs mein print karein
     console.log("=== NEW ORDER CONFIRMED ===");
     console.log({
       phone: customerPhone,
@@ -75,8 +77,7 @@ app.post('/webhook', async (req, res) => {
   }
 });
 
-// ChatMitra API se message bhejne ka function
-// ChatMitra API se message bhejne ka function
+// ChatMitra API se message bhejne ka exact function
 async function sendWhatsAppMessage(to, text) {
   try {
     await axios.post(
@@ -105,3 +106,8 @@ async function sendWhatsAppMessage(to, text) {
     console.error("Message bhejne mein error:", error.response?.data || error.message);
   }
 }
+
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Webhook server running on port ${PORT}`);
+});
