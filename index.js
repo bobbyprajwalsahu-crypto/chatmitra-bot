@@ -85,7 +85,7 @@ app.post('/webhook', async (req, res) => {
       userState[customerPhone].addressText = incomingText;
       userState[customerPhone].step = 'WAITING_FOR_PINCODE';
 
-      const askPincodeText = `Aapka naam aur address mil gaya hai! 📍\n\nOrder confirm karne ke liye kripya apna *6-digit Pincode* bhi bhejein.`;
+      const askPincodeText = `Agar aapne apna naam or address hume bhej diya hai to Order confirm karne ke liye kripya apna *6-digit Pincode* bhi bhejein. 📍`;
       await sendWhatsAppMessage(customerPhone, askPincodeText);
     }
   }
@@ -111,7 +111,7 @@ app.post('/webhook', async (req, res) => {
         pincode: pincode
       });
 
-      const confirmText = `Dhanyawad *${customerWaName}*! ✅\n\nAapka order aur delivery address (Pincode: *${pincode}*) note kar liya gaya hai. Hum jald hi aapka order dispatch karke tracking details bhejenge.`;
+      const confirmText = `Dhanyawad *${customerWaName}*! ✅\n\nAapka order aur delivery address (Pincode: *${pincode}*) note kar liya gaya hai. Humari team jald hi order ki delivery ke liye aapse sampark karegi.`;
       await sendWhatsAppMessage(customerPhone, confirmText);
 
       delete userState[customerPhone];
